@@ -1,0 +1,109 @@
+header{
+	text-align: center;
+	margin: 0 auto;
+	padding-top: 1em;
+}
+
+.user_options{
+	text-align: right;
+	margin-right: 212px;
+	padding-top: 3em;
+}
+
+.user_login{
+	text-decoration:none;
+}
+
+.grid{
+	width: 70%;
+	display: grid;
+	grid-template-columns: 200px 1fr;
+	margin: 0 auto;
+
+}
+
+h2{
+	text-align: center;
+}
+
+.topics_container{
+	width: 100%;
+	background-color: #ADADAD;
+}
+
+.orderByOptions{
+	display: grid;
+	padding-bottom: 1em;
+}
+
+form{
+	margin-left: 3em;
+}
+
+.topics[type=button]{
+  background-color: #614444;
+  border: none;
+  color: white;
+  padding: 16px 32px;
+  text-decoration: none;
+  margin: 4px 2px;
+  cursor: pointer;
+  display: list-item;
+  margin-bottom: 1em;
+  text-align: center;
+}
+
+.text_container{
+	background-color: #E0E0E0;
+
+}
+
+.sections{
+	width: 100%;
+	padding: 1em;
+}
+
+.login_page{
+	margin-top: 10%;
+}
+
+#form{
+	width: 30%;
+	margin:0 auto;
+	background-color: #d3d3d3;
+	padding: 1em;
+}
+
+#form_heading {
+	text-align: center;
+}
+
+#username[name="username"],
+#password[name="password"]{
+	padding: 12px 20px;
+	margin: 8px 0;
+	display: list-item;
+	border: 1px solid #ccc;
+	box-sizing: border-box;
+}
+
+.form_field{
+	margin: 0 auto;
+	display: table;
+}
+
+
+/* creteUser style */
+
+
+.registerForm{
+	width: 30%;
+	margin:0 auto;
+	background-color: #d3d3d3;
+	padding: 1em;
+
+}
+
+.createUser{
+	margin-top: 5%;
+}
