@@ -9,10 +9,23 @@
 		</a>
 	-->
 
+		<!-- Checks if the user is logged in then show logout button -->
+		<?php if(isset($_SESSION["user"])){ ?>
+			<a href="/assignment_2/index.php?logout=1">
+				<input type="button"  value="Logout">
+			</a>
+			<a href="/assignment_2/index.php?editprofile=1">
+				<input type="button" value="Edit profile">
+			</a>
+			<a href="/assignment_2/index.php?createTopic=1">
+				<input type="button" value="Create Topic">
+			</a>
+		<?php } else { ?>  <!-- else show login button -->
+			<a href="/assignment_2/index.php?login=1">
+				<input type="button"  value="Login">
+			</a>
+		<?php } ?>
 
-		<a href="/assignment_2/index.php?login=1">
-			<input type="button"  value="Login">
-		</a>
 
 		<input type="text" placeholder="Search..">
 	</div>
@@ -27,23 +40,33 @@
 				<select>
 					<option value="text" selected="...">...</option>
 					<option value="Lastest">Lastest</option>
-						<option value="Popularity">Popularity</option>
-						<option value="Chronological">Chronological</option>
+					<option value="Popularity">Popularity</option>
+					<option value="Chronological">Chronological</option>
 				</select>
 			</div>
 
 			<hr>
 
 			<div class="topics">
-				<form action="/action_page.php">
+				<!--<form action="/action_page.php">
+-->
 
-				  <input class="topics" type="button" name="gender" value="topic">
-				  <input class="topics" type="button" name="gender" value="topic">
-				  <input class="topics" type="button" name="gender" value="topic">
-				  <input class="topics" type="button" name="age" value="topic">
-				  <input class="topics" type="button" name="age" value="topic">
+				<?php
+					echo "<select>";
+					foreach ($data[0] as $topic) {
 
-				</form>
+
+						echo "<option value=\"". $topic->getID() ."\">". $topic->getTopicName() ."</option>";
+					}
+					echo "<\select>";
+				?>
+	<!--		  <input class="topics" type="button" name="gender" value="topic">
+			  <input class="topics" type="button" name="gender" value="topic">
+			  <input class="topics" type="button" name="gender" value="topic">
+			  <input class="topics" type="button" name="age" value="topic">
+			  <input class="topics" type="button" name="age" value="topic">
+
+				</form> -->
 			</div>
 		</div>
 

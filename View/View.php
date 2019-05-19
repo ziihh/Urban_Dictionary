@@ -12,6 +12,7 @@ class View{
 		include $contentFilePath;
 		include 'View/includes/footer.php';
 	}
+
 }
 
 

@@ -1,5 +1,6 @@
 <?php
 include("Model/User.php");
+include("Model/Topic.php");
 include("View/View.php");
 include("Model/DBModel.php");
 
@@ -9,22 +10,23 @@ class Controller{
 	private $view;
 
 	function __construct(){
+		session_start();
 		$this->model = new DBModel();
 		$this->view = new View();
 	}
 
 	function invoke(){
+		$topics = $this->model->getTopics();
 
 		if(isset($_POST["registerUser"])){
 
 			$newUserName = filter_var($_POST['userr'], FILTER_SANITIZE_STRING);
-			$newPassword1 = password_hash($_POST['password_1'], PASSWORD_DEFAULT);
-			$newPassword2 = password_hash($_POST['password_2'], PASSWORD_DEFAULT);
+			$newPassword = password_hash($_POST['password_1'], PASSWORD_DEFAULT);
 			$newMail = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
 			$newFirstName = filter_var($_POST['fname'], FILTER_SANITIZE_STRING);
 			$newLastName = filter_var($_POST['lname'], FILTER_SANITIZE_STRING);
 
-			$newUser = new User($newFirstName, $newLastName, $newUserName, $newPassword1, $newMail);
+			$newUser = new User($newFirstName, $newLastName, $newUserName, $newPassword, $newMail);
 
 			$msg = $this->validateUserInfo($newUser);
 
@@ -37,33 +39,91 @@ class Controller{
 			}
 
 
+		} else if(isset($_POST["loginButton"])){
+			$user = new User();
+			$user->setUserName($_POST["username"]);
+			$user->setPassword($_POST["password"]);
+			$resp = $this->model->authenticate($user);
+
+			if($resp["code"] == 200){
+				$user = $resp["payload"];
+				$_SESSION["user"] = $user;
+				header("Refresh:0");
+			} else {
+				echo $resp["message"];
+				$this->view->createPage("View/Login.php", []);
+			}
+
 		} else if(isset($_GET["register"])){
 			$this->view->createPage("View/RegisterUser.php", []);
 
 		} else if(isset($_GET["login"])){
 			$this->view->createPage("View/Login.php", []);
 
-		} else if(isset($_POST["loginButton"])){
-			$username = $_POST["username"];
-			$password = $_POST["password"];
+		} else if(isset($_GET["logout"])){
+			session_unset();
+			session_destroy();
+			$this->view->createPage("View/Home.php", [$topics]);
 
-			$user = new User($userName, $password);
-			$DBuser = $this->model->getUser($user);
+		} else if(isset($_GET["editprofile"])){
+			$this->view->createPage("View/EditProfile.php", [$_SESSION["user"]]);
 
-			if($username == $DBuser->getuserName() && passowrd_verify($password, $DBuser->getPassword()){
+		} else if(isset($_POST["updateUser"])){
+			$this->updateUserInfo();
 
-			}
+		} else if(isset($_GET["createTopic"])){
+			$this->view->createPage("View/CreateTopic.php", [$_SESSION["user"]]);
 
+		} else if(isset($_POST["addTopic"])){
+			$this->addNewTopic([$topics]);
+
+		} else {
+			$this->view->createPage("View/Home.php", [$topics]);
 		}
-		else {
-			$this->view->createPage("View/Home.php", []);
+
+	}
+
+	function addNewTopic($displayObjs){
+		if($_SESSION["user"]->getUserType() == "author" || $_SESSION["user"]->getUserType() == "admin"){
+			$topicName = $_POST["tName"];
+
+			$newTopic = new Topic($topicName, $_SESSION["user"]->getID());
+
+			$this->model->insertTopic($newTopic);
+	   		header("Refresh:0");
+	   	} else {
+			$this->view->createPage("View/Home.php", $displayObjs);
+	   	}
+	}
+
+	function updateUserInfo(){
+		// Get current logged in user.
+		$loggedUser = $_SESSION["user"];
+
+		// Validate fields.
+		if($_POST["fname"] != ""){
+			$loggedUser->setFirstName($_POST["fname"]);
 		}
 
+		if($_POST["lname"] != "") {
+			$loggedUser->setLastName($_POST["lname"]);
+		}
 
+		if($_POST["email"] != "") {
+			$loggedUser->setEmail($_POST["email"]);
+		}
 
+		// Check if old password match.
+		if(password_verify($_POST["oldPass"], $loggedUser->getPassword())){
+			$loggedUser->setPassword(password_hash($_POST["newPass"], PASSWORD_DEFAULT));
+		}
 
+		// Update user in DB.
+		$this->model->updateUser($loggedUser);
 
-
+		// Update user in the session variable.
+		$_SESSION["user"] = $loggedUser;
+   		header("Refresh:0");
 	}
 
 	function validateUserInfo($newUser){

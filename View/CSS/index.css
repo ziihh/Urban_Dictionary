@@ -36,10 +36,6 @@ h2{
 	padding-bottom: 1em;
 }
 
-form{
-	margin-left: 3em;
-}
-
 .topics[type=button]{
   background-color: #614444;
   border: none;
@@ -55,11 +51,11 @@ form{
 
 .text_container{
 	background-color: #E0E0E0;
+	width: 100%;
 
 }
 
 .sections{
-	width: 100%;
 	padding: 1em;
 }
 
@@ -106,4 +102,58 @@ form{
 
 .createUser{
 	margin-top: 5%;
+}
+
+
+
+/* Edit Profile */
+
+
+.Edit_Profile{
+	width: 30%;
+    display: table;
+    background-color: gray;
+    margin-left: 33%;
+    margin-top: 4%;
+}
+
+.editForm{
+	display: grid;
+	padding: 1em;
+}
+
+
+.updateFields{
+	padding: 12px 20px;
+	margin: 8px 0;
+	display: list-item;
+	border: 1px solid #ccc;
+	box-sizing: border-box;
+
+}
+
+
+
+/* Create Topic */
+
+.createTopic{
+	margin-top:  5%;
+
+}
+
+.createTopicForm{
+	width: 30%;
+	margin:0 auto;
+	background-color: #d3d3d3;
+	padding: 1em;
+
+}
+
+#inputFields{
+	padding: 12px 20px;
+	margin: 8px 0;
+	display: list-item;
+	border: 1px solid #ccc;
+	box-sizing: border-box;
+	width: 100%;
 }

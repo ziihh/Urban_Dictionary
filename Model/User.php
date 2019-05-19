@@ -2,15 +2,16 @@
 
 class User{
 	private $id;
-	private $firstname;
+	private $firstName;
 	private $lastName;
 	private $userName;
 	private $password;
 	private $email;
 	private $userType;
 
-	function __construct($firstname, $lastName, $userName, $password, $email, $userType = "author"){
-		$this->firstname = $firstname;
+	function __construct($firstName = "", $lastName = "", $userName = "", $password = "", $email = "", $userType = "author"){
+
+		$this->firstName = $firstName;
 		$this->lastName = $lastName;
 		$this->userName = $userName;
 		$this->password = $password;
@@ -18,17 +19,12 @@ class User{
 		$this->userType = $userType;
 	}
 
-	function __construct($userName, $password){
-		$this->userName = $userName;
-		$this->password = $password;
-	}
-
 	function getID(){
 		return $this->id;
 	}
 
 	function getFirstName(){
-		return $this->firstname;
+		return $this->firstName;
 	}
 
 	function getLastName(){
@@ -56,7 +52,7 @@ class User{
 	}
 
 	function setFirstName($firstName){
-		$this->firstname = $firstname;
+		$this->firstName = $firstName;
 	}
 
 	function setLastName($lastName){
@@ -78,6 +74,5 @@ class User{
 	function setUserType($userType){
 		$this->userType = $userType;
 	}
-
 }
 ?>
