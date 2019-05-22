@@ -1,7 +1,7 @@
 <div class="createTopic">
 
 	<form name="test" class="createTopicForm" method="POST" action="index.php">
-		<a href="/assignment_2/index.php">
+		<a href="/Urban_Dictionary/index.php">
 			<button value="Home">Home</button>
 		</a>
 		<h1>Create Topic </h1>

@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.8.4
+-- version 4.8.5
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1
--- Generation Time: May 19, 2019 at 01:42 PM
--- Server version: 10.1.37-MariaDB
--- PHP Version: 7.3.1
+-- Host: localhost
+-- Generation Time: May 22, 2019 at 06:20 PM
+-- Server version: 10.1.39-MariaDB
+-- PHP Version: 7.1.29
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -33,8 +33,18 @@ CREATE TABLE `entries` (
   `entryName` varchar(250) NOT NULL,
   `entryDescription` varchar(1000) NOT NULL,
   `topicId` int(25) NOT NULL,
-  `userId` int(25) NOT NULL
+  `userId` int(25) NOT NULL,
+  `entryDate` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `entries`
+--
+
+INSERT INTO `entries` (`entryId`, `entryName`, `entryDescription`, `topicId`, `userId`, `entryDate`) VALUES
+(3, 'chain', 'Chain is a long line of metal of wood encoupled rings', 2, 21, '2019-05-19'),
+(9, 'OOP', 'Object-Oriented Programming is a style of programming and an abstraction of real world objects.', 3, 22, '2019-05-19'),
+(10, 'class', 'classclassclassclassclassclass', 3, 22, '2019-05-21');
 
 -- --------------------------------------------------------
 
@@ -53,7 +63,8 @@ CREATE TABLE `topics` (
 --
 
 INSERT INTO `topics` (`topicId`, `topicName`, `userId`) VALUES
-(2, 'houseHold', 22);
+(2, 'houseHold', 21),
+(3, 'Programming', 22);
 
 -- --------------------------------------------------------
 
@@ -76,7 +87,7 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`userId`, `firstName`, `lastName`, `userName`, `email`, `password`, `type`) VALUES
-(21, 'Zain', 'Butt', 'zainbb', 'zain_b10@hotmail.com', '$2y$10$waeDfvP8y7G/6KudKxoFEuEdoJKDpcF33JCeSn2/s/Wl5gqdCn/LK', 'author'),
+(21, 'Zain', 'Butt', 'zainbb', 'zain_b10@hotmail.com', '$2y$10$waeDfvP8y7G/6KudKxoFEuEdoJKDpcF33JCeSn2/s/Wl5gqdCn/LK', 'admin'),
 (22, 'Zohaib', 'Butt', 'zohaib194', 'zohaib_b13@hotmail.com', '$2y$10$iLBimxTSyfEdOhpUSHxA3u/r.pvVcCP2qcfai/kTnox29oPxUbdKa', 'author');
 
 --
@@ -112,13 +123,13 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `entries`
 --
 ALTER TABLE `entries`
-  MODIFY `entryId` int(25) NOT NULL AUTO_INCREMENT;
+  MODIFY `entryId` int(25) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `topics`
 --
 ALTER TABLE `topics`
-  MODIFY `topicId` int(25) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `topicId` int(25) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `users`

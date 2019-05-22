@@ -1,5 +1,5 @@
 <div class="Edit_Profile">
-	<a href="/assignment_2/index.php">
+	<a href="/Urban_Dictionary/index.php">
 		<button value="Home">Home</button>
 	</a>
 

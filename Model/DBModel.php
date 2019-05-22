@@ -54,12 +54,12 @@ class DBModel {
 	function updateUser($user){
 		$query = $this->db->prepare("UPDATE users SET firstName = :firstName, lastName = :lastName, email = :email, password = :password WHERE userId = :userId AND userName = :userName");
 
-		$query->bindValue(':firstName', 	$user->getFirstName(),	PDO::PARAM_STR);
-        $query->bindValue(':lastName', 	$user->getLastName(), 		PDO::PARAM_STR);
-        $query->bindValue(':email', 	$user->getEmail(),			PDO::PARAM_STR);
-        $query->bindValue(':password', 	$user->getPassword(),		PDO::PARAM_STR);
-        $query->bindValue(':userId', 	$user->getID(),				PDO::PARAM_INT);
-        $query->bindValue(':userName', 	$user->getUserName(),		PDO::PARAM_STR);
+		$query->bindValue(':firstName', $user->getFirstName(),	PDO::PARAM_STR);
+        $query->bindValue(':lastName', 	$user->getLastName(), 	PDO::PARAM_STR);
+        $query->bindValue(':email', 	$user->getEmail(),		PDO::PARAM_STR);
+        $query->bindValue(':password', 	$user->getPassword(),	PDO::PARAM_STR);
+        $query->bindValue(':userId', 	$user->getID(),			PDO::PARAM_INT);
+        $query->bindValue(':userName', 	$user->getUserName(),	PDO::PARAM_STR);
 
 		$query->execute();
 
@@ -76,6 +76,27 @@ class DBModel {
 		$newTopic->setID($this->db->lastInsertId());
 	}
 
+	function insertEntry($newEntry){
+		$query = $this->db->prepare("INSERT INTO entries(entryName, entryDescription, topicId, userId, entryDate) VALUES(:entryName, :entryDescription, :topicId, :userId, :entryDate)");
+
+        $query->bindValue(':entryName',			$newEntry->getEntryName(),			PDO::PARAM_STR);
+        $query->bindValue(':entryDescription',	$newEntry->getEntryDescription(),	PDO::PARAM_STR);
+        $query->bindValue(':topicId', 			$newEntry->getTopicID(),			PDO::PARAM_INT);
+        $query->bindValue(':userId', 			$newEntry->getUserID(),				PDO::PARAM_INT);
+        $query->bindValue(':entryDate', 		$newEntry->getDate(),				PDO::PARAM_STR);
+
+		$query->execute();
+
+		$newEntry->setID($this->db->lastInsertId());
+	}
+
+	function deleteEntry($entryId){
+		$query = $this->db->prepare("DELETE FROM entries WHERE entryId=:entryId");
+        $query->bindValue(':entryId', $entryId, PDO::PARAM_STR);
+
+		$query->exec();
+	}
+
 	function getTopics(){
 		$topics = array();
 
@@ -86,11 +107,27 @@ class DBModel {
 
 		foreach ($result as $row) {
 			$topic = new Topic($row["topicName"], $row["userId"], $row["topicId"]);
-
 			array_push($topics, $topic);
 		}
 
 		return $topics;
+	}
+
+	function getEntriesByTopicId($topicId){
+		$entries = array();
+
+		$query = $this->db->prepare("SELECT * FROM entries WHERE topicId = :topicId");
+        $query->bindValue(':topicId', $topicId, PDO::PARAM_INT);
+		$query->execute();
+
+		$result = $query->fetchAll(PDO::FETCH_ASSOC);
+
+		foreach ($result as $row) {
+			$entry = new Entry($row["entryName"], $row["entryDescription"], $row["topicId"], $row["userId"], $row["entryDate"], $row["entryId"]);
+			array_push($entries, $entry);
+		}
+
+		return $entries;
 	}
 
 	/**

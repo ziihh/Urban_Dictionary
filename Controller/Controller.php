@@ -1,6 +1,7 @@
 <?php
 include("Model/User.php");
 include("Model/Topic.php");
+include("Model/Entry.php");
 include("View/View.php");
 include("Model/DBModel.php");
 
@@ -77,6 +78,19 @@ class Controller{
 		} else if(isset($_POST["addTopic"])){
 			$this->addNewTopic([$topics]);
 
+		} else if(isset($_GET["topicEntries"])){
+			$entries = $this->model->getEntriesByTopicId($_GET["topicEntries"]);
+			$this->view->createPage("View/Home.php", [$topics, $entries]);
+
+		}else if(isset($_GET["createEntry"])){
+			$this->view->createPage("View/AddEntry.php", [$topics]);
+
+		} else if(isset($_POST["addEntry"])){
+			$this->addNewEntry([$topics]);
+
+		} else if(isset($_GET["deleteEntry"])){
+			$this->model->deleteEntry($_GET["deleteEntry"]);
+
 		} else {
 			$this->view->createPage("View/Home.php", [$topics]);
 		}
@@ -90,6 +104,20 @@ class Controller{
 			$newTopic = new Topic($topicName, $_SESSION["user"]->getID());
 
 			$this->model->insertTopic($newTopic);
+	   		header("Refresh:0");
+	   	} else {
+			$this->view->createPage("View/Home.php", $displayObjs);
+	   	}
+	}
+
+	function addNewEntry($displayObjs){
+		if($_SESSION["user"]->getUserType() == "author" || $_SESSION["user"]->getUserType() == "admin"){
+			$entryName = $_POST["eName"];
+			$entryDesc = $_POST["eDesc"];
+			$topicId = $_POST["topicsSelection"];
+
+			$newEntry = new Entry($entryName, $entryDesc, $topicId, $_SESSION["user"]->getID(), date("Y/m/d", time()));
+			$this->model->insertEntry($newEntry);
 	   		header("Refresh:0");
 	   	} else {
 			$this->view->createPage("View/Home.php", $displayObjs);

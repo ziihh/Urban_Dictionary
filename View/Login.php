@@ -14,7 +14,7 @@
 
 
 			</form>
-			<a href="/assignment_2/index.php?register=1">
+			<a href="/Urban_Dictionary/index.php?register=1">
 				<button value="Register">Register</button>
 			</a>
 		</div>
