@@ -5,9 +5,8 @@ header{
 }
 
 .user_options{
-	text-align: right;
-	margin-right: 212px;
 	padding-top: 3em;
+	padding-bottom: 2em;
 }
 
 .user_login{
@@ -15,11 +14,14 @@ header{
 }
 
 .grid{
-	width: 70%;
+	width: 85%;
 	display: grid;
-	grid-template-columns: 250px 1fr;
+	grid-template-columns: 337px 1fr;
 	margin: 0 auto;
+}
 
+.entryDate {
+    margin-top: 3em;
 }
 
 h2{
@@ -56,7 +58,9 @@ h2{
 }
 
 .sections{
-	padding: 1em;
+	padding-top: 1em;
+	padding-right: 1em;
+	padding-left: 1em;
 }
 
 .login_page{
@@ -164,4 +168,16 @@ h2{
 
 .topicDeleteButton{
 	display: inline-flex;
+}
+
+.usersList{
+    display: table;
+    background-color: gray;
+    margin: 0 auto;
+}
+
+.verticalName {
+	content: "";
+	border-left: 1px solid black;
+	height: 100%;
 }

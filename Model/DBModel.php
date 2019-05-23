@@ -65,6 +65,58 @@ class DBModel {
 
 	}
 
+	function getUserById($id){
+		$query = $this->db->prepare("SELECT * FROM `users` WHERE userId = :id");
+        $query->bindValue(':id', $id,	PDO::PARAM_INT);
+
+		$query->execute();
+
+		$result = $query->fetch(PDO::FETCH_ASSOC);
+		$user = new User($result["firstName"], $result["lastName"], $result["userName"], $result["password"], $result["email"], $result["type"]);
+		$user->setID($result["userId"]);
+
+		return $user;
+	}
+
+	function deleteUserById($id){
+		$this->deleteEntryByUserId($id);
+		$this->deleteTopicByUserId($id);
+
+		$query = $this->db->prepare("DELETE FROM `users` WHERE userId = :id");
+        $query->bindValue(':id', $id, PDO::PARAM_INT);
+
+		$query->execute();
+	}
+
+	function deleteEntryByUserId($id){
+		$query = $this->db->prepare("DELETE FROM entries WHERE userId=:id");
+        $query->bindValue(':id', $id, PDO::PARAM_INT);
+
+		$query->execute();
+	}
+
+	function deleteTopicByUserId($id){
+		$query = $this->db->prepare("DELETE FROM topics WHERE userId=:id");
+        $query->bindValue(':id', $id, PDO::PARAM_INT);
+
+		$query->execute();
+	}
+
+	function getUsersList(){
+		$users = array();
+		$query = $this->db->prepare("SELECT * FROM `users`");
+
+		$query->execute();
+		$result = $query->fetchAll(PDO::FETCH_ASSOC);
+
+		foreach ($result as $row) {
+			$user = new User($row["firstName"], $row["lastName"], $row["userName"], $row["password"], $row["email"], $row["type"]);
+			$user->setID($row["userId"]);
+			array_push($users, $user);
+		}
+		return $users;
+	}
+
 	function insertTopic($newTopic){
 		$query = $this->db->prepare("INSERT INTO topics(topicName, userId) VALUES(:topicName, :userId)");
 
@@ -92,9 +144,20 @@ class DBModel {
 
 	function deleteEntry($entryId){
 		$query = $this->db->prepare("DELETE FROM entries WHERE entryId=:entryId");
-        $query->bindValue(':entryId', $entryId, PDO::PARAM_STR);
+        $query->bindValue(':entryId', $entryId, PDO::PARAM_INT);
 
-		$query->exec();
+		$query->execute();
+	}
+
+	function getNrOfEntriesByTopicId($id){
+		$query = $this->db->prepare("SELECT COUNT(*) FROM `entries` WHERE topicId=:id");
+        $query->bindValue(':id', $id, PDO::PARAM_INT);
+
+		$query->execute();
+
+		$res = $query->fetch();
+
+		return $res[0];
 	}
 
 	function getTopics(){
@@ -113,10 +176,25 @@ class DBModel {
 		return $topics;
 	}
 
+	function deleteTopic($topicId){
+		$this->deleteAllEntriesByTopicId($topicId);
+		$query = $this->db->prepare("DELETE FROM topics WHERE topicId=:topicId");
+        $query->bindValue(':topicId', $topicId, PDO::PARAM_INT);
+
+		$query->execute();
+	}
+
+	function deleteAllEntriesByTopicId($topicId){
+		$query = $this->db->prepare("DELETE FROM entries WHERE topicId=:topicId");
+        $query->bindValue(':topicId', $topicId, PDO::PARAM_INT);
+
+		$query->execute();
+	}
+
 	function getEntriesByTopicId($topicId){
 		$entries = array();
 
-		$query = $this->db->prepare("SELECT * FROM entries WHERE topicId = :topicId");
+		$query = $this->db->prepare("SELECT * FROM entries WHERE topicId = :topicId ORDER BY entryDate DESC");
         $query->bindValue(':topicId', $topicId, PDO::PARAM_INT);
 		$query->execute();
 

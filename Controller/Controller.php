@@ -16,8 +16,24 @@ class Controller{
 		$this->view = new View();
 	}
 
+	static function cmp($a, $b){
+		if(strtolower($a->getTopicName()) > strtolower($b->getTopicName())){
+			return 1;
+		} else if(strtolower($a->getTopicName()) < strtolower($b->getTopicName())){
+			return -1;
+		} else {
+			return 0;
+		}
+	}
+
 	function invoke(){
 		$topics = $this->model->getTopics();
+
+
+		if(isset($_COOKIE["Order"]) && $_COOKIE["Order"] == "Chronological"){
+			usort($topics, array("Controller", "cmp"));
+		}
+
 
 		if(isset($_POST["registerUser"])){
 
@@ -69,8 +85,26 @@ class Controller{
 		} else if(isset($_GET["editprofile"])){
 			$this->view->createPage("View/EditProfile.php", [$_SESSION["user"]]);
 
-		} else if(isset($_POST["updateUser"])){
+		}  else if(isset($_POST["updateUser"])){
 			$this->updateUserInfo();
+
+		} else if(isset($_GET["usersList"]) && isset($_GET["updateUserId"]) && isset($_POST["adminUpdateUser"])){
+			$this->adminUpdateUserInfo($_GET["updateUserId"]);
+
+			$usersList = $this->model->getUsersList();
+
+			$this->view->createPage("View/UsersList.php", [$usersList]);
+
+		} else if(isset($_GET["usersList"]) && isset($_GET["deleteUserId"])){
+			$this->model->deleteUserById($_GET["deleteUserId"]);
+			$usersList = $this->model->getUsersList();
+
+			$this->view->createPage("View/UsersList.php", [$usersList]);
+
+		} else if(isset($_GET["usersList"])){
+			$usersList = $this->model->getUsersList();
+
+			$this->view->createPage("View/UsersList.php", [$usersList]);
 
 		} else if(isset($_GET["createTopic"])){
 			$this->view->createPage("View/CreateTopic.php", [$_SESSION["user"]]);
@@ -78,19 +112,37 @@ class Controller{
 		} else if(isset($_POST["addTopic"])){
 			$this->addNewTopic([$topics]);
 
-		} else if(isset($_GET["topicEntries"])){
+		} else if(isset($_GET["topicEntries"]) && !array_key_exists("deleteEntry", $_GET)){
 			$entries = $this->model->getEntriesByTopicId($_GET["topicEntries"]);
+
 			$this->view->createPage("View/Home.php", [$topics, $entries]);
 
-		}else if(isset($_GET["createEntry"])){
+		} else if(isset($_GET["deleteTopic"])){
+			$this->model->deleteTopic((int)$_GET["deleteTopic"]);
+			header("Location:index.php");
+
+		} else if(isset($_GET["createEntry"])){
 			$this->view->createPage("View/AddEntry.php", [$topics]);
 
 		} else if(isset($_POST["addEntry"])){
 			$this->addNewEntry([$topics]);
 
-		} else if(isset($_GET["deleteEntry"])){
-			$this->model->deleteEntry($_GET["deleteEntry"]);
+		} else if(isset($_GET["deleteEntry"]) && isset($_GET["topicEntries"])){
+			$this->model->deleteEntry((int)$_GET["deleteEntry"]);
+			header("Location:index.php?topicEntries=".$_GET["topicEntries"]);
 
+		} else if(isset($_GET["summary"])){
+
+			$topicsMap = array();
+			foreach ($topics as $topic) {
+				$topicsMap[$topic->getTopicName()] = $this->model->getNrOfEntriesByTopicId($topic->getID());
+			}
+
+			$this->view->createPage("View/Summary.php", [$topicsMap]);
+		} else if(isset($_POST["orderBy"])) {
+			setcookie("Order", $_POST["orderBy"]);
+
+			header("Refresh:0");
 		} else {
 			$this->view->createPage("View/Home.php", [$topics]);
 		}
@@ -124,6 +176,34 @@ class Controller{
 	   	}
 	}
 
+	function adminUpdateUserInfo($id){
+		$user = $this->model->getUserById($id);
+
+		// Validate fields.
+		if($_POST["fname"] != ""){
+			$user->setFirstName($_POST["fname"]);
+		}
+
+		if($_POST["lname"] != "") {
+			$user->setLastName($_POST["lname"]);
+		}
+
+		if($_POST["email"] != "") {
+			$user->setEmail($_POST["email"]);
+		}
+
+		// Check if old password match and it not a empty string.
+		if($_POST["newPass"] != ""){
+			$user->setPassword(password_hash($_POST["newPass"], PASSWORD_DEFAULT));
+		}
+
+		// Update user in DB.
+		$this->model->updateUser($user);
+
+		//header("Refresh:0");
+	}
+
+
 	function updateUserInfo(){
 		// Get current logged in user.
 		$loggedUser = $_SESSION["user"];
@@ -141,8 +221,8 @@ class Controller{
 			$loggedUser->setEmail($_POST["email"]);
 		}
 
-		// Check if old password match.
-		if(password_verify($_POST["oldPass"], $loggedUser->getPassword())){
+		// Check if old password match and it not a empty string.
+		if(password_verify($_POST["oldPass"], $loggedUser->getPassword()) && $_POST["newPass"] != ""){
 			$loggedUser->setPassword(password_hash($_POST["newPass"], PASSWORD_DEFAULT));
 		}
 
@@ -151,7 +231,7 @@ class Controller{
 
 		// Update user in the session variable.
 		$_SESSION["user"] = $loggedUser;
-   		header("Refresh:0");
+		header("Refresh:0");
 	}
 
 	function validateUserInfo($newUser){

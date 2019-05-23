@@ -27,7 +27,17 @@
 			<a href="/Urban_Dictionary/index.php?login=1">
 				<input type="button"  value="Login">
 			</a>
-		<?php } ?>
+		<?php }
+
+			if(isset($_SESSION["user"]) && $_SESSION["user"]->getUserType() == "admin"){ ?>
+				<a href="/Urban_Dictionary/index.php?usersList=1">
+					<input type="button"  value="User list">
+				</a>
+				<a href="/Urban_Dictionary/index.php?summary=1">
+					<input type="button"  value="Summary">
+				</a>
+	<?php	} ?>
+
 
 
 		<input type="text" placeholder="Search..">
@@ -40,12 +50,14 @@
 			<hr>
 			<div class="orderByOptions">
 				<h3>Order by:</h3>
-				<select>
-					<option value="text" selected="...">...</option>
-					<option value="Lastest">Lastest</option>
-					<option value="Popularity">Popularity</option>
-					<option value="Chronological">Chronological</option>
-				</select>
+				<form method="POST" action="index.php">
+					<select name="orderBy">
+						<option value="text" selected="...">...</option>
+						<option value="Popularity">Popularity</option>
+						<option value="Chronological">Chronological</option>
+					</select>
+					<input type="submit" value="Order By"/>
+				</form>
 			</div>
 
 			<hr>
@@ -72,6 +84,7 @@
 					//echo "</a>";
 
 						foreach ($data[0] as $topic) {
+							echo "<div>";
 							echo "<form class=\"topicDeleteButton\" method=\"POST\" action=\"index.php\">";
 								echo "<a href=\"/Urban_Dictionary/index.php?topicEntries=". $topic->getID()."\">";
 									echo "<input class=\"topics\" type=\"button\" data-id=\"". $topic->getID() ."\" value=\"". $topic->getTopicName() . "\">";
@@ -84,6 +97,7 @@
 									echo "</a>";
 								}
 							echo "</form>";
+							echo "</div>";
 
 						}
 
@@ -106,6 +120,7 @@
 						echo "<div class=\"sections\">";
 							echo "<h2>". $entry->getEntryName() ."</h2>";
 							echo "<p>" . $entry->getEntryDescription() . "</p>";
+							echo "<p class=\"entryDate\"><small>" . $entry->getDate() . "</small></p>";
 						echo "</div>";
 
 						echo "<form class=\"entryDeleteButtonForm\" method=\"POST\" action=\"index.php\">";
@@ -124,36 +139,6 @@
 
 			?>
 
-
-			<h2>Lurom ipsum</h2>
-
-			<div class="sections">
-				<h3>lurom impsum</h3>
-				<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries.</p>
-			</div>
-
-			<hr>
-
-			<div class="sections">
-				<h3>lurom impsum</h3>
-				<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries.</p>
-			</div>
-
-			<hr>
-
-			<div class="sections">
-				<h3>lurom impsum</h3>
-				<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries.</p>
-			</div>
 		</div>
 	</div>
 </div>
-
-<script>
-$('.topicsSelection').change(function(){
-    var topicsSelected=$('.topicsSelection').val();
-    $.ajax({url:"/Urban_Dictionary/index.php?deleteTopic="+topicsSelected,cache:false,success:function(result){
-        $(".ShowSelectedValueDiv").html(result);
-    }});
-});
-</script>
