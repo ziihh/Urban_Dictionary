@@ -1,47 +1,47 @@
 <div class="homeBody">
 	<header>
-	<h1>Urban dictionary</h1>
-	<div class="user_options">
-	<!--	<a href="login.html" class="user_login">
-			<i class="glyphicon glyphicon-user"></i>
+		<h1>Urban dictionary</h1>
+		<div class="user_options">
 
-
-		</a>
-	-->
-
-		<!-- Checks if the user is logged in then show logout button -->
-		<?php if(isset($_SESSION["user"])){ ?>
-			<a href="/Urban_Dictionary/index.php?logout=1">
-				<input type="button"  value="Logout">
-			</a>
-			<a href="/Urban_Dictionary/index.php?editprofile=1">
-				<input type="button" value="Edit profile">
-			</a>
-			<a href="/Urban_Dictionary/index.php?createTopic=1">
-				<input type="button" value="Create Topic">
-			</a>
-			<a href="/Urban_Dictionary/index.php?createEntry=1">
-				<input type="button" value="Add an entry">
-			</a>
-		<?php } else { ?>  <!-- else show login button -->
-			<a href="/Urban_Dictionary/index.php?login=1">
-				<input type="button"  value="Login">
-			</a>
-		<?php }
-
-			if(isset($_SESSION["user"]) && $_SESSION["user"]->getUserType() == "admin"){ ?>
-				<a href="/Urban_Dictionary/index.php?usersList=1">
-					<input type="button"  value="User list">
+			<!-- Checks if the user is logged in then show logout button -->
+			<?php if(isset($_SESSION["user"])){ ?>
+				<a href="/Urban_Dictionary/index.php?logout=1">
+					<input type="button"  value="Logout">
 				</a>
-				<a href="/Urban_Dictionary/index.php?summary=1">
-					<input type="button"  value="Summary">
+				<a href="/Urban_Dictionary/index.php?editprofile=1">
+					<input type="button" value="Edit profile">
 				</a>
-	<?php	} ?>
+				<a href="/Urban_Dictionary/index.php?createTopic=1">
+					<input type="button" value="Create Topic">
+				</a>
+				<a href="/Urban_Dictionary/index.php?createEntry=1">
+					<input type="button" value="Add an entry">
+				</a>
+			<?php } else { ?>  <!-- else show login button -->
+				<a href="/Urban_Dictionary/index.php?login=1">
+					<input type="button"  value="Login">
+				</a>
+			<?php }
 
+				if(isset($_SESSION["user"]) && $_SESSION["user"]->getUserType() == "admin"){ ?>
+					<a href="/Urban_Dictionary/index.php?usersList=1">
+						<input type="button"  value="User list">
+					</a>
+					<a href="/Urban_Dictionary/index.php?summary=1">
+						<input type="button"  value="Summary">
+					</a>
+			<?php } ?>
 
+			<form method="POST" action="index.php">
+				<input id="search" type="text" name="searchField" placeholder="Search..">
+				<select name="categoryToSearch">
+					<option value="topics">Topics</option>
+					<option value="entries">Entries</option>
+				</select>
+				<input id="submit" type="submit" name="submitSearch" value="Search">
+			</form>
 
-		<input type="text" placeholder="Search..">
-	</div>
+		</div>
 	</header>
 
 	<div class="grid">
@@ -115,7 +115,7 @@
 		<div class="text_container">
 
 			<?php
-				if(sizeof($data) >= 2){
+				if(sizeof($data) >= 2 && $data[1] != null){
 					foreach ($data[1] as $entry) {
 						echo "<div class=\"sections\">";
 							echo "<h2>". $entry->getEntryName() ."</h2>";
@@ -131,6 +131,25 @@
 								echo "</a>";
 							}
 						echo "</form>";
+						echo "<hr>";
+					}
+				} else if(sizeof($data) >= 3 && $data[2] != null){
+					echo "<h2 id=\"searchResult\">Search result for topics</h2>";
+					foreach ($data[2] as $topic) {
+						echo "<div class=\"searchResultSection\">";
+							echo "<a href=\"/Urban_Dictionary/index.php?topicEntries=". $topic->getID() . "\">";
+								echo "<p>". $topic->getTopicName() ."</p>";
+							echo "</a>";
+						echo "</div>";
+					}
+				} else if(sizeof($data) >= 4 && $data[3] != null){
+					echo "<h2 id=\"searchResult\">Search result for entries</h2>";
+					foreach ($data[3] as $entry) {
+						echo "<div class=\"sections\">";
+							echo "<h2>". $entry->getEntryName() ."</h2>";
+							echo "<p>" . $entry->getEntryDescription() . "</p>";
+							echo "<p class=\"entryDate\"><small>" . $entry->getDate() . "</small></p>";
+						echo "</div>";
 						echo "<hr>";
 					}
 				} else {

@@ -14,10 +14,11 @@ class DBModel {
 			echo "Error ocurred! " . $e->getMessage();
 		}
 	}
+
 	/**
-	 * { function_description }
+	 * Resigster user.
 	 *
-	 * @param      <type>  $newUser  The new user
+	 * @param      string  $newUser  The new user.
 	 */
 	function registerUser($newUser){
 		$query = $this->db->prepare("INSERT INTO users(userName, password, email, firstName, lastName, type) VALUES(:user, :pass, :mail, :nm, :snm, :typ)");
@@ -206,6 +207,62 @@ class DBModel {
 		}
 
 		return $entries;
+	}
+
+	function searchMatchingTopics($searchKey){
+		$topics = array();
+		$query = $this->db->prepare("SELECT * FROM topics WHERE topicName LIKE :topicName");
+        $query->bindValue(':topicName', '%'.$searchKey.'%', PDO::PARAM_STR);
+
+		$query->execute();
+
+		$result = $query->fetchAll(PDO::FETCH_ASSOC);
+
+		foreach ($result as $row) {
+			$topic = new Topic($row["topicName"], $row["userId"], $row["topicId"]);
+			array_push($topics, $topic);
+		}
+
+		return $topics;
+	}
+
+	function searchMatchingEntries($searchKey){
+		$entries = array();
+		$query = $this->db->prepare("SELECT * FROM entries WHERE entryName LIKE :entryName");
+        $query->bindValue(':entryName', '%'.$searchKey.'%', PDO::PARAM_STR);
+
+		$query->execute();
+
+		$result = $query->fetchAll(PDO::FETCH_ASSOC);
+
+		foreach ($result as $row) {
+			$entry = new Entry($row["entryName"], $row["entryDescription"], $row["topicId"], $row["userId"], $row["entryDate"], $row["entryId"]);
+			array_push($entries, $entry);
+		}
+
+		return $entries;
+	}
+
+	function getEntriesAddedInLastWeekByTopicsId($topics){
+		$entriesPerTopicInLastWeek = array();
+		foreach ($topics as $topic) {
+			$entries = array();
+			$query = $this->db->prepare("SELECT * FROM entries WHERE DATE_SUB(CURDATE(),INTERVAL 7 DAY) <= entryDate && topicId = :topicId");
+	        $query->bindValue(':topicId', $topic->getID(), PDO::PARAM_INT);
+
+			$query->execute();
+
+			$result = $query->fetchAll(PDO::FETCH_ASSOC);
+
+			foreach ($result as $row) {
+				$entry = new Entry($row["entryName"], $row["entryDescription"], $row["topicId"], $row["userId"], $row["entryDate"], $row["entryId"]);
+				array_push($entries, $entry);
+			}
+
+			$entriesPerTopicInLastWeek[$topic->getID()] = sizeof($entries);
+		}
+
+		return $entriesPerTopicInLastWeek;
 	}
 
 	/**

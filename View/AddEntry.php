@@ -1,9 +1,9 @@
 <div class="createEntry">
-
+	<a href="/Urban_Dictionary/index.php">
+		<button value="Home">Home</button>
+	</a>
 	<form name="test" class="createEntryForm" method="POST" action="index.php">
-		<a href="/Urban_Dictionary/index.php">
-			<button value="Home">Home</button>
-		</a>
+
 		<h1>Add an entry </h1>
 
 		<div class="inputFields">
@@ -14,6 +14,8 @@
 			<label>Entry description</label>
 			<input id="inputFields" type="text" name="eDesc" id="eDesc" required>
 		</div>
+		<label>Choose topic</label>
+
 
 		<?php
 			echo "<select id=\"topicsSelection\" name=\"topicsSelection\">";

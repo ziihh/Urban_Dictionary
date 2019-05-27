@@ -28,6 +28,10 @@ h2{
 	text-align: center;
 }
 
+#searchResult, .searchResultSection{
+	text-align: center;
+}
+
 .topics_container{
 	width: 100%;
 	background-color: #ADADAD;
@@ -54,7 +58,6 @@ h2{
 .text_container{
 	background-color: #E0E0E0;
 	width: 100%;
-
 }
 
 .sections{
@@ -70,7 +73,7 @@ h2{
 #form{
 	width: 30%;
 	margin:0 auto;
-	background-color: #d3d3d3;
+	background-color: #E0E0E0;;
 	padding: 1em;
 }
 
@@ -92,31 +95,22 @@ h2{
 	display: table;
 }
 
-
 /* creteUser style */
 
-
-.registerForm{
+.createUser{
 	width: 30%;
 	margin:0 auto;
 	background-color: #d3d3d3;
 	padding: 1em;
-
-}
-
-.createUser{
 	margin-top: 5%;
 }
 
-
-
 /* Edit Profile */
-
 
 .Edit_Profile{
 	width: 30%;
     display: table;
-    background-color: gray;
+    background-color: #E0E0E0;;
     margin-left: 33%;
     margin-top: 4%;
 }
@@ -125,32 +119,31 @@ h2{
 	display: grid;
 	padding: 1em;
 }
-
-
+.editUserForm{
+	width: 30%;
+    display: table;
+    background-color: #E0E0E0;
+    padding: 1em;
+    margin:0 auto;
+    position: relative;
+}
 .updateFields{
 	padding: 12px 20px;
 	margin: 8px 0;
 	display: list-item;
 	border: 1px solid #ccc;
 	box-sizing: border-box;
-
+	width: 100%;
 }
-
-
 
 /* Create Topic */
 
-.createTopic, .createEntry{
-	margin-top:  5%;
-
-}
-
-.createTopicForm, .createEntryForm{
+.createTopic{
 	width: 30%;
 	margin:0 auto;
 	background-color: #d3d3d3;
 	padding: 1em;
-
+	margin-top: 4em;
 }
 
 #inputFields{
@@ -160,6 +153,14 @@ h2{
 	border: 1px solid #ccc;
 	box-sizing: border-box;
 	width: 100%;
+}
+
+.createEntry{
+	width: 30%;
+	margin:0 auto;
+	background-color: #d3d3d3;
+	padding: 1em;
+	margin-top: 4em;
 }
 
 .entryDeleteButtonForm {
@@ -172,7 +173,7 @@ h2{
 
 .usersList{
     display: table;
-    background-color: gray;
+    background-color: #d3d3d3;
     margin: 0 auto;
 }
 
@@ -180,4 +181,29 @@ h2{
 	content: "";
 	border-left: 1px solid black;
 	height: 100%;
+}
+.summary{
+	width: 20%;
+	margin:0 auto;
+	background-color: #d3d3d3;
+	padding: 1em;
+	margin-top: 4em;
+}
+.summaryList{
+    display: table;
+    background-color: #d3d3d3;
+    margin: 0 auto;
+}
+.users{
+	width: 20%;
+	margin: 0 auto;
+	margin-left: 0;
+	background-color: #d3d3d3;
+	padding: 1em;
+	position: absolute;
+
+}
+.userListPage{
+	margin-left: 30%;
+padding: 1em;
 }

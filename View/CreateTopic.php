@@ -1,9 +1,9 @@
 <div class="createTopic">
-
+	<a href="/Urban_Dictionary/index.php">
+		<button class="homeButton" value="Home">Home</button>
+	</a>
 	<form name="test" class="createTopicForm" method="POST" action="index.php">
-		<a href="/Urban_Dictionary/index.php">
-			<button value="Home">Home</button>
-		</a>
+
 		<h1>Create Topic </h1>
 
 		<div class="inputFields">

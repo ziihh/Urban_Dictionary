@@ -17,9 +17,9 @@ class Controller{
 	}
 
 	static function cmp($a, $b){
-		if(strtolower($a->getTopicName()) > strtolower($b->getTopicName())){
+		if($a->getTopicName() > $b->getTopicName()){
 			return 1;
-		} else if(strtolower($a->getTopicName()) < strtolower($b->getTopicName())){
+		} else if($a->getTopicName() < $b->getTopicName()){
 			return -1;
 		} else {
 			return 0;
@@ -32,6 +32,10 @@ class Controller{
 
 		if(isset($_COOKIE["Order"]) && $_COOKIE["Order"] == "Chronological"){
 			usort($topics, array("Controller", "cmp"));
+		} else if(isset($_COOKIE["Order"]) && $_COOKIE["Order"] == "Popularity"){
+			$entriesPerTopicInLastWeek = $this->model->getEntriesAddedInLastWeekByTopicsId($topics);
+			arsort($entriesPerTopicInLastWeek);
+			$topics = $this->sortTopicsByPopularity($entriesPerTopicInLastWeek, $topics);
 		}
 
 
@@ -143,41 +147,73 @@ class Controller{
 			setcookie("Order", $_POST["orderBy"]);
 
 			header("Refresh:0");
+
+		} else if(isset($_POST["submitSearch"])) {
+			$topicsMatch = array();
+			$entriesMatch = array();
+
+			if($_POST["searchField"] != "" && $_POST["categoryToSearch"] == "topics"){
+				$topicsMatch = $this->model->searchMatchingTopics(filter_var($_POST["searchField"], FILTER_SANITIZE_STRING));
+
+			} else if($_POST["searchField"] != "" && $_POST["categoryToSearch"] == "entries"){
+				$entriesMatch = $this->model->searchMatchingEntries(filter_var($_POST["searchField"], FILTER_SANITIZE_STRING));
+
+			}
+			$this->view->createPage("View/Home.php", [$topics, null, $topicsMatch, $entriesMatch]);
 		} else {
 			$this->view->createPage("View/Home.php", [$topics]);
 		}
 
 	}
-
+	/**
+	 * Adds a new topic.
+	 *
+	 * @param      array  $displayObjs  Items that should be displayed on home page.
+	 */
 	function addNewTopic($displayObjs){
+
+		// Checks if user is either admin or author.
 		if($_SESSION["user"]->getUserType() == "author" || $_SESSION["user"]->getUserType() == "admin"){
-			$topicName = $_POST["tName"];
+			$topicName = $_POST["tName"]; // Fetch the posted topic name in form by user.
 
 			$newTopic = new Topic($topicName, $_SESSION["user"]->getID());
 
-			$this->model->insertTopic($newTopic);
+			$this->model->insertTopic($newTopic); // Insert topic object into database.
 	   		header("Refresh:0");
 	   	} else {
 			$this->view->createPage("View/Home.php", $displayObjs);
 	   	}
 	}
-
+	/**
+	 * Adds a new entry.
+	 *
+	 * @param      array  $displayObjs  Items that should be displayed on home page.
+	 */
 	function addNewEntry($displayObjs){
+
+		// Checks if user is admin or author.
 		if($_SESSION["user"]->getUserType() == "author" || $_SESSION["user"]->getUserType() == "admin"){
+
+			// Fetch the fields posted in form by the user.
 			$entryName = $_POST["eName"];
 			$entryDesc = $_POST["eDesc"];
 			$topicId = $_POST["topicsSelection"];
 
 			$newEntry = new Entry($entryName, $entryDesc, $topicId, $_SESSION["user"]->getID(), date("Y/m/d", time()));
-			$this->model->insertEntry($newEntry);
+			$this->model->insertEntry($newEntry); // Insert entry object into database.
 	   		header("Refresh:0");
 	   	} else {
 			$this->view->createPage("View/Home.php", $displayObjs);
 	   	}
 	}
 
+	/**
+	 * function validates user info and then updates the user.
+	 *
+	 * @param      int  $id     The identifier.
+	 */
 	function adminUpdateUserInfo($id){
-		$user = $this->model->getUserById($id);
+		$user = $this->model->getUserById($id); // Fetch user by his id.
 
 		// Validate fields.
 		if($_POST["fname"] != ""){
@@ -203,7 +239,9 @@ class Controller{
 		//header("Refresh:0");
 	}
 
-
+	/**
+	 * Update the user information.
+	 */
 	function updateUserInfo(){
 		// Get current logged in user.
 		$loggedUser = $_SESSION["user"];
@@ -233,7 +271,13 @@ class Controller{
 		$_SESSION["user"] = $loggedUser;
 		header("Refresh:0");
 	}
-
+	/**
+	 * Validates user information.
+	 *
+	 * @param      user object  $newUser  The new user
+	 *
+	 * @return     string  Error message.
+	 */
 	function validateUserInfo($newUser){
 		$message = "";
 		$passMatch = true;
@@ -250,6 +294,30 @@ class Controller{
 		}
 
 		return $message;
+	}
+	/**
+	 * Sort topics by popolarity.
+	 *
+	 * @param      array  $arrayToBaseOn  The array to base on.
+	 * @param      array  $arrayToSort    The array to sort.
+	 *
+	 * @return     array   sorted array of topics.
+	 */
+	function sortTopicsByPopularity($arrayToBaseOn, $arrayToSort){
+		$resultSortedArray = array();
+
+		// Loops throught arrayToBaseOn
+		foreach ($arrayToBaseOn as $topicId => $nrOfEntries) {
+
+			foreach ($arrayToSort as $topic) {
+
+				if($topic->getID() == $topicId){
+					array_push($resultSortedArray, $topic);
+				}
+			}
+		}
+
+		return $resultSortedArray;
 	}
 
 

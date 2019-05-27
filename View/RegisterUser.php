@@ -1,4 +1,7 @@
 <div class="createUser">
+	<a href="/Urban_Dictionary/index.php">
+			<button value="Home">Home</button>
+	</a>
 	<form name="test" class="registerForm" method="POST" action="index.php">
 	<h1>Register </h1>
 
