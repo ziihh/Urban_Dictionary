@@ -26,10 +26,13 @@
 				<th><hr></th>
 			</tr>
 			<?php
+				// Loop through each user.
 				foreach ($data[0] as $user) {
 					echo "<tr>";
 						echo "<td>". $user->getUserName() ."</td>";
 						echo "<th class=\"verticalName\"></th>";
+
+						// If logged in user is not the current user from list show both delete and update button.
 						if($_SESSION["user"]->getUserName() != $user->getUserName()){
 
 						echo "<td>
@@ -43,7 +46,7 @@
 									<button type=\"button\" class=\"btn\"><i class=\"fa fa-gear\"></i></button>
 								</a>
 							</td>";
-						} else {
+						} else {		// Otherwise lock the delete and update button.
 
 							echo "<td>
 								<a href=\"/Urban_Dictionary/index.php?usersList=1\">
@@ -64,6 +67,8 @@
 			?>
 		</table>
 	</div>
+</div>
+
 	<?php
 
 		if (isset($_GET["updateUserId"])){
@@ -74,7 +79,6 @@
 
 	?>
 
-</div>
 		<div class="editUserForm">
 
 				<form  method="POST">

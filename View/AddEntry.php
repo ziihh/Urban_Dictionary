@@ -18,6 +18,7 @@
 
 
 		<?php
+			// View each topic as an option in add entry page.
 			echo "<select id=\"topicsSelection\" name=\"topicsSelection\">";
 			foreach ($data[0] as $topic) {
 				echo "<option value=". $topic->getID() .">". $topic->getTopicName() ."</option>";

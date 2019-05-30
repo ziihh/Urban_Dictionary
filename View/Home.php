@@ -23,6 +23,7 @@
 				</a>
 			<?php }
 
+				// If user is logged in and is an admin show userlist and summary button.
 				if(isset($_SESSION["user"]) && $_SESSION["user"]->getUserType() == "admin"){ ?>
 					<a href="/Urban_Dictionary/index.php?usersList=1">
 						<input type="button"  value="User list">
@@ -63,58 +64,35 @@
 			<hr>
 
 			<div class="topics">
-				<!--<form action="/action_page.php">
--->
 
 				<?php
-//					echo "<form method=\"POST\" action=\"\">";
-//						echo "<select id=\"topicsSelection\" name=\"topicsSelection\">";
-//						foreach ($data[0] as $topic) {
-//
-//
-//							echo "<option value=". $topic->getID() .">". $topic->getTopicName() ."</option>";
-//							if ($_SESSION["user"]->getUserType() == "admin") {
-//							}
-//						}
-//						echo "</select>";
-//					echo "</form>";
 
-					//echo "<a href=\"/Urban_Dictionary/index.php?deleteTopic=1\">";
-					//	echo "<button type=\"submit\" class=\"btn\"><i class=\"fa fa-trash\"></i></button>";
-					//echo "</a>";
+					foreach ($data[0] as $topic) {
+						echo "<div>";
+						echo "<form class=\"topicDeleteButton\" method=\"POST\" action=\"index.php\">";
+							echo "<a href=\"/Urban_Dictionary/index.php?topicEntries=". $topic->getID()."\">";
+								echo "<input class=\"topics\" type=\"button\" data-id=\"". $topic->getID() ."\" value=\"". $topic->getTopicName() . "\">";
+							echo "</a>";
 
-						foreach ($data[0] as $topic) {
-							echo "<div>";
-							echo "<form class=\"topicDeleteButton\" method=\"POST\" action=\"index.php\">";
-								echo "<a href=\"/Urban_Dictionary/index.php?topicEntries=". $topic->getID()."\">";
-									echo "<input class=\"topics\" type=\"button\" data-id=\"". $topic->getID() ."\" value=\"". $topic->getTopicName() . "\">";
+							// if user is logged and is either a admin or author. if an author then topic must be created by himself to gain delete functionality.
+							if(isset($_SESSION["user"]) && ($_SESSION["user"]->getUserType() == "admin" || ($_SESSION["user"]->getUserType() == "author" && $topic->getUserID() == $_SESSION["user"]->getID()))){
+								echo "<a href=\"/Urban_Dictionary/index.php?deleteTopic=". $topic->getID()."\">";
+									echo "<button type=\"button\" class=\"btn\"><i class=\"fa fa-trash\"></i></button>";
 								echo "</a>";
+							}
+						echo "</form>";
+						echo "</div>";
 
-								// if user is logged and is either a admin or author. if an author then topic must be created by himself to gain delete functionality.
-								if(isset($_SESSION["user"]) && ($_SESSION["user"]->getUserType() == "admin" || ($_SESSION["user"]->getUserType() == "author" && $topic->getUserID() == $_SESSION["user"]->getID()))){
-									echo "<a href=\"/Urban_Dictionary/index.php?deleteTopic=". $topic->getID()."\">";
-										echo "<button type=\"button\" class=\"btn\"><i class=\"fa fa-trash\"></i></button>";
-									echo "</a>";
-								}
-							echo "</form>";
-							echo "</div>";
-
-						}
+					}
 
 				?>
-	<!--		  <input class="topics" type="button" name="gender" value="topic">
-			  <input class="topics" type="button" name="gender" value="topic">
-			  <input class="topics" type="button" name="gender" value="topic">
-			  <input class="topics" type="button" name="age" value="topic">
-			  <input class="topics" type="button" name="age" value="topic">
-
-				</form> -->
 			</div>
 		</div>
 
 		<div class="text_container">
 
 			<?php
+				// Show entries.
 				if(sizeof($data) >= 2 && $data[1] != null){
 					foreach ($data[1] as $entry) {
 						echo "<div class=\"sections\">";
@@ -124,6 +102,7 @@
 						echo "</div>";
 
 						echo "<form class=\"entryDeleteButtonForm\" method=\"POST\" action=\"index.php\">";
+
 							// if user is logged and is either a admin or author. if an author then topic must be created by himself to gain delete functionality.
 							if(isset($_SESSION["user"]) && ($_SESSION["user"]->getUserType() == "admin" || ($_SESSION["user"]->getUserType() == "author" && $entry->getUserID() == $_SESSION["user"]->getID()))){
 								echo "<a href=\"/Urban_Dictionary/index.php?topicEntries=". $_GET["topicEntries"] ."&deleteEntry=". $entry->getID() ."\">";
@@ -133,7 +112,7 @@
 						echo "</form>";
 						echo "<hr>";
 					}
-				} else if(sizeof($data) >= 3 && $data[2] != null){
+				} else if(sizeof($data) >= 3 && $data[2] != null){						// Show search result for topics
 					echo "<h2 id=\"searchResult\">Search result for topics</h2>";
 					foreach ($data[2] as $topic) {
 						echo "<div class=\"searchResultSection\">";
@@ -142,7 +121,7 @@
 							echo "</a>";
 						echo "</div>";
 					}
-				} else if(sizeof($data) >= 4 && $data[3] != null){
+				} else if(sizeof($data) >= 4 && $data[3] != null){						// Show search result for entries.
 					echo "<h2 id=\"searchResult\">Search result for entries</h2>";
 					foreach ($data[3] as $entry) {
 						echo "<div class=\"sections\">";

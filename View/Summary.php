@@ -10,7 +10,6 @@
 			<tr>
 				<th>Topic</th>
 				<th class="verticalName"></th>
-
 				<th>Nr of entries</th>
 
 			</tr>
@@ -21,18 +20,19 @@
 			</tr>
 
 			<?php
+				// Show number of entries for each topic.
 				foreach ($data[0] as $topicName => $nrOfEntries) {
 					echo "<tr>";
 						echo "<th>" . $topicName . "</th>";
 						echo "<th class=\"verticalName\"></th>";
 						echo "<th>" . $nrOfEntries . "</th>";
 					echo "</tr>";
-					echo "<th><hr></th>";
-					echo "<th><hr></th>";
-					echo "<th><hr></th>";
 				}
 
 			?>
+				<th><hr></th>
+				<th><hr></th>
+				<th><hr></th>
 
 		</table>
 	</div>
