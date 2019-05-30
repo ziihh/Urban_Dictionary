@@ -62,6 +62,9 @@ A visitor accessing the main page of the website should see the list of topics a
 A user in the system can be either an admin or author. If the logged user is an author, she/he should be able to create new topics, add entries to existing topics (up to 1000 characters), and delete entries and topics created by him, and update his registration data (including the password). If the user logs in as an admin, in addition to what an author can do, he should be able to delete users, delete any topic or entry, and see a summary (i.e., a list presenting the number of entries under each topic).
 
 ## Explaination
+- System uses MySQL database.
+- Keeps track of user via cookies, sesseion and authentication.
+- System mitigates SQL injection.
 - Indexes to tables are added as needed.
 - System keep track of user preferences for topic ordering using cookies.
 - System protect all password using default built-in php hashing algorithm called bcrypt algorithm.
